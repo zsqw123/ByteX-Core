@@ -1,52 +1,56 @@
 package com.ss.android.ugc.bytex.gradletoolkit
 
+import bytex.core.patch.AGPStub
+import com.android.build.api.artifact.BuildArtifactType
 import com.android.build.api.transform.TransformInvocation
-import com.android.build.gradle.internal.publishing.AndroidArtifacts
-import com.bytedance.gradle.compat.AGP
+import com.android.build.gradle.internal.scope.InternalArtifactType
 import com.google.auto.service.AutoService
+import org.gradle.api.Project
 import java.io.File
 import java.util.*
-import com.bytedance.gradle.compat.extension.variant
 
 /**
  * Created by tanlehua on 2019-04-29.
  */
 @AutoService(TransformEnv::class)
-class TransformEnvImpl() : TransformEnv {
+class TransformEnvImpl : TransformEnv {
+    private lateinit var project: Project
+
+    override fun setProject(project: Project) {
+        this.project = project
+    }
+
     private var invocation: TransformInvocation? = null
 
     override fun setTransformInvocation(invocation: TransformInvocation) {
         this.invocation = invocation
     }
 
+    private val artifactFinder: AGPStub.ArtifactCollectionFinder by lazy {
+        AGPStub.ArtifactCollectionFinder(invocation!!, project)
+    }
+
     override fun getArtifact(artifact: Artifact): Collection<File> {
         if (invocation == null) {
             return Collections.emptyList()
         }
-        return when (artifact) {
-            Artifact.AAR -> invocation!!.variant.aarArtifactCollection()
-            Artifact.JAR -> invocation!!.variant.jarArtifactCollection()
-            Artifact.PROCESSED_JAR -> {
-                if (AGP.agpVersionCode() >= 400) {
-                    invocation!!.variant.processedJarArtifactCollection()
-                } else {
-                    invocation!!.variant.jarArtifactCollection()
-                }
+        return with(artifactFinder) {
+            when (artifact) {
+                Artifact.AAR -> find(InternalArtifactType.AAR)
+                Artifact.JAR -> find(InternalArtifactType.FULL_JAR)
+                Artifact.PROCESSED_JAR -> find(InternalArtifactType.FULL_JAR)
+                Artifact.CLASSES -> find(BuildArtifactType.JAVA_COMPILE_CLASSPATH)
+                Artifact.ALL_CLASSES -> find(BuildArtifactType.JAVAC_CLASSES)
+                Artifact.APK -> find(InternalArtifactType.APK)
+                Artifact.JAVAC -> find(BuildArtifactType.JAVAC_CLASSES)
+                Artifact.MERGED_ASSETS -> find(InternalArtifactType.MERGED_ASSETS)
+                Artifact.MERGED_RES -> find(InternalArtifactType.MERGED_RES)
+                Artifact.MERGED_MANIFESTS -> find(InternalArtifactType.MERGED_MANIFESTS)
+                Artifact.PROCESSED_RES -> find(InternalArtifactType.PROCESSED_RES)
+                Artifact.SYMBOL_LIST -> find(InternalArtifactType.SYMBOL_LIST)
+                Artifact.SYMBOL_LIST_WITH_PACKAGE_NAME -> find(InternalArtifactType.SYMBOL_LIST_WITH_PACKAGE_NAME)
+                else -> emptyList()
             }
-            Artifact.CLASSES -> invocation!!.variant.classesArtifactCollection()
-            Artifact.ALL_CLASSES -> invocation!!.variant.allClasses
-            Artifact.APK -> invocation!!.variant.apk
-            Artifact.JAVAC -> invocation!!.variant.javacClasses
-            Artifact.MERGED_ASSETS -> invocation!!.variant.mergedAssets
-            Artifact.MERGED_RES -> invocation!!.variant.mergedRes
-            Artifact.MERGED_MANIFESTS -> invocation!!.variant.mergedManifestFiles
-            Artifact.MERGED_MANIFESTS_WITH_FEATURES -> invocation!!.variant.mergedManifestFilesWithFeatures
-            Artifact.PROCESSED_RES -> invocation!!.variant.processedRes
-            Artifact.SYMBOL_LIST -> invocation!!.variant.symbolList
-            Artifact.SYMBOL_LIST_WITH_PACKAGE_NAME -> invocation!!.variant.symbolListWithPackageName
-            Artifact.RAW_RESOURCE_SETS -> invocation!!.variant.mergeResources.computeResourceSetList0()
-                    ?: emptyList()
-            Artifact.RAW_ASSET_SETS -> invocation!!.variant.mergeSourceSet.assetSetList()
         }
     }
 }

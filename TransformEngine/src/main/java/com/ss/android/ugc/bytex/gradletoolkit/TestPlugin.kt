@@ -22,7 +22,7 @@ class TestPlugin : Plugin<Project> {
 
         override fun isIncremental(): Boolean = false
 
-        val env = TransformEnvImpl()
+        private val env = TransformEnvImpl().also { it.setProject(project) }
         override fun transform(transformInvocation: TransformInvocation) {
             super.transform(transformInvocation)
             env.setTransformInvocation(transformInvocation)
@@ -48,7 +48,8 @@ class TestPlugin : Plugin<Project> {
         }
 
         private fun printOutput(artifact: Artifact): String {
-            return artifact.name + ":\n\t" + env.getArtifact(artifact).map { it.absolutePath }.sorted().joinToString("\n\t")
+            return artifact.name + ":\n\t" + env.getArtifact(artifact).map { it.absolutePath }.sorted()
+                .joinToString("\n\t")
         }
 
         override fun getScopes(): MutableSet<in QualifiedContent.Scope> = TransformManager.SCOPE_FULL_PROJECT

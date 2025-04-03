@@ -1,5 +1,6 @@
 package com.ss.android.ugc.bytex.transformer;
 
+import bytex.core.patch.AGPStub;
 import com.android.build.api.transform.QualifiedContent;
 import com.android.build.api.transform.TransformInvocation;
 import com.android.build.gradle.AppExtension;
@@ -8,7 +9,6 @@ import com.google.common.base.Joiner;
 import com.ss.android.ugc.bytex.gradletoolkit.Artifact;
 import com.ss.android.ugc.bytex.gradletoolkit.GradleEnv;
 import com.ss.android.ugc.bytex.gradletoolkit.TransformEnv;
-import com.ss.android.ugc.bytex.gradletoolkit.TransformInvocationKt;
 import com.ss.android.ugc.bytex.transformer.cache.DirCache;
 import com.ss.android.ugc.bytex.transformer.cache.FileCache;
 import com.ss.android.ugc.bytex.transformer.cache.FileData;
@@ -85,6 +85,7 @@ public class TransformContext implements GradleEnv, ClassFinder {
             if (transformOptions.isForbidUseLenientMutationDuringGetArtifact()) {
                 transformEnv = new TransformEnvWithNoLenientMutationImpl(transformEnv);
             }
+            transformEnv.setProject(project);
             transformEnv.setTransformInvocation(invocation);
         }
         temporaryDirName = invocation.getContext().getTemporaryDir().getName();
@@ -190,7 +191,7 @@ public class TransformContext implements GradleEnv, ClassFinder {
     }
 
     public BaseVariant getVariant() {
-        return TransformInvocationKt.getVariant(invocation);
+        return AGPStub.getVariant(invocation, project);
     }
 
     public File androidJar() throws FileNotFoundException {
@@ -258,7 +259,7 @@ public class TransformContext implements GradleEnv, ClassFinder {
     }
 
     public File getProguardMappingFile(){
-        BaseVariant variant = TransformInvocationKt.getVariant(invocation);
+        BaseVariant variant = AGPStub.getVariant(invocation, project);
         return new File(Joiner.on(File.separatorChar).join(
                 String.valueOf(project.getBuildDir()),
                 FD_OUTPUTS,

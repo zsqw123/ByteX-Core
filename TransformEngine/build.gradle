@@ -2,27 +2,32 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 
+repositories {
+    maven { url "https://artifact.bytedance.com/repository/byteX/" }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly gradleApi()
     compileOnly "com.android.tools.build:gradle:$gradle_version"
-    compile "com.google.guava:guava:$guava_version"
-    testCompile 'com.squareup.okio:okio:1.14.0'
-    compile "io.reactivex.rxjava2:rxjava:2.2.6"
+    api "com.google.guava:guava:$guava_version"
+    testImplementation 'com.squareup.okio:okio:1.14.0'
+    api "io.reactivex.rxjava2:rxjava:2.2.6"
 }
 
 dependencies {
-    compile "org.ow2.asm:asm:$asm_version"
-    compile "org.ow2.asm:asm-tree:$asm_version"
-    compile "org.ow2.asm:asm-util:$asm_version"
-    compile "org.ow2.asm:asm-analysis:$asm_version"
-    compile "org.ow2.asm:asm-commons:$asm_version"
-    compile "com.google.code.gson:gson:2.8.2"
-    compile 'dom4j:dom4j:1.6.1'
+    api "org.ow2.asm:asm:$asm_version"
+    api "org.ow2.asm:asm-tree:$asm_version"
+    api "org.ow2.asm:asm-util:$asm_version"
+    api "org.ow2.asm:asm-analysis:$asm_version"
+    api "org.ow2.asm:asm-commons:$asm_version"
+    api "com.google.code.gson:gson:2.8.2"
+    api 'dom4j:dom4j:1.6.1'
     kapt 'com.google.auto.service:auto-service:1.0-rc4'
-    compile 'com.google.auto.service:auto-service:1.0-rc4'
-    compile("com.bytedance.android.build:gradle-compat-api:$gradle_compat_version")
-    runtime("com.bytedance.android.build:gradle-compat-impl:$gradle_compat_version")
+    api 'com.google.auto.service:auto-service:1.0-rc4'
+    // compile only bytedance gradle compat to avoid dependency delivery.
+    compileOnly("com.bytedance.android.build:gradle-compat-api:$gradle_compat_version")
+    runtimeOnly("com.bytedance.android.build:gradle-compat-impl:$gradle_compat_version")
 }
 
 apply from: rootProject.file('gradle/publish.gradle')

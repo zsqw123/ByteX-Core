@@ -38,13 +38,13 @@ def pomArtifactId = properties.getProperty("ARTIFACT_NAME") == null ? "$project.
 def pomVersion = properties.getProperty("upload_version") == null ? "$upload_version" : properties.getProperty("upload_version")
 def mavenUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
 
-def uploadDir = properties.getProperty("UPLOADDIR") == null ? "$upload_dir" : properties.getProperty("UPLOADDIR")
+//def uploadDir = properties.getProperty("UPLOADDIR") == null ? "$upload_dir" : properties.getProperty("UPLOADDIR")
 
-apply plugin: 'org.jetbrains.dokka'
-dokka {
-    outputFormat = 'javadoc'
-    outputDirectory = "$buildDir/javadoc"
-}
+//apply plugin: 'org.jetbrains.dokka'
+//dokka {
+//    outputFormat = 'javadoc'
+//    outputDirectory = "$buildDir/javadoc"
+//}
 
 java {
     withJavadocJar()

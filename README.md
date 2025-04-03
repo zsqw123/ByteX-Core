@@ -11,7 +11,7 @@ Version Alignment:
 
 | ByteX Version | ByteX-Core Version |
 |:-------------:|:------------------:|
-|     0.3.0     |       0.3.0        |
+|     0.3.0     |       0.3.1        |
 
 This repo only provides those 2 artifacts which taken from ByteX:
 
