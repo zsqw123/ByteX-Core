@@ -1,20 +1,3 @@
-def excludeApp = false
-def proFile = file("./upload.properties")
-if (proFile != null) {
-    Properties p = new Properties()
-    try {
-        proFile.withInputStream { stream ->
-            p.load(stream)
-        }
-        excludeApp = p.excludeApp
-    } catch (e) {
-    }
-}
-if (!excludeApp) {
-//    "./publish.sh".execute().waitForProcessOutput(System.out, System.err)
-    include ':example'
-}
-
 //common
 include ':base-plugin'
 include ':common'
@@ -33,23 +16,3 @@ include ':PluginConfigProcessor'
 project(':PluginConfigProcessor').projectDir = new File('PluginConfig/PluginConfigProcessor')
 include ':PluginConfigAnnotation'
 project(':PluginConfigAnnotation').projectDir = new File('PluginConfig/PluginConfigAnnotation')
-
-//opensource
-include ':shrink-r-plugin'
-include ':access-inline-plugin'
-include ':getter-setter-inline-plugin'
-include ':refer-check-plugin'
-include ':closeable-check-plugin'
-include ':serialization-check-plugin'
-include ':const-inline-plugin'
-include ':field-assign-opt-plugin'
-include ':method-call-opt-plugin'
-include ':SourceFileKiller'
-include ':butterknife-check-plugin'
-
-include ':coverage-plugin'
-project(':coverage-plugin').projectDir = new File('coverage/coverage-plugin')
-include ':coverage-lib'
-project(':coverage-lib').projectDir = new File('coverage/coverage-lib')
-
-//pull request
