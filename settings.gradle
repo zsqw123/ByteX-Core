@@ -1,16 +1,2 @@
-//common
-include ':common'
 include ':TransformEngine'
-include ':ProguardConfigurationResolver'
-include ':ProguardConfigurationResolver-task'
-include ':ProguardConfigurationResolver-transform'
-project(':ProguardConfigurationResolver').projectDir = new File('HookProguard/ProguardConfigurationResolver')
-project(':ProguardConfigurationResolver-task').projectDir = new File('HookProguard/ProguardConfigurationResolver/task')
-project(':ProguardConfigurationResolver-transform').projectDir = new File('HookProguard/ProguardConfigurationResolver/transform')
-include ':GradleToolKit'
-include ':GradleEnvApi'
-project(':GradleEnvApi').projectDir = new File('GradleToolKit/GradleEnvApi')
 include ':PluginConfigProcessor'
-project(':PluginConfigProcessor').projectDir = new File('PluginConfig/PluginConfigProcessor')
-include ':PluginConfigAnnotation'
-project(':PluginConfigAnnotation').projectDir = new File('PluginConfig/PluginConfigAnnotation')

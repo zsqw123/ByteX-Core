@@ -1,5 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly gradleApi()
@@ -7,8 +9,19 @@ dependencies {
     compile "com.google.guava:guava:$guava_version"
     testCompile 'com.squareup.okio:okio:1.14.0'
     compile "io.reactivex.rxjava2:rxjava:2.2.6"
-    compile project(':GradleEnvApi')
-    compile project(':GradleToolKit')
+}
+
+dependencies {
+    compile "org.ow2.asm:asm:$asm_version"
+    compile "org.ow2.asm:asm-tree:$asm_version"
+    compile "org.ow2.asm:asm-util:$asm_version"
+    compile "org.ow2.asm:asm-analysis:$asm_version"
+    compile "org.ow2.asm:asm-commons:$asm_version"
+    compile "com.google.code.gson:gson:2.8.2"
+    compile 'dom4j:dom4j:1.6.1'
+    kapt 'com.google.auto.service:auto-service:1.0-rc4'
+    compile("com.bytedance.android.build:gradle-compat-api:$gradle_compat_version")
+    runtime("com.bytedance.android.build:gradle-compat-impl:$gradle_compat_version")
 }
 
 apply from: rootProject.file('gradle/publish.gradle')
