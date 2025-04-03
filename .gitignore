@@ -30,6 +30,7 @@ build/
 
 # Local configuration jar (sdk path, etc)
 local.properties
+upload.properties
 
 # Log Files
 *.log

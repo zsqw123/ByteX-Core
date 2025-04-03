@@ -12,16 +12,17 @@ try {
 } catch (ignored) {
 }
 
-def uploadToMaven = false
-def uploadToJCenter = false
-def useSnapshotMaven = false
 try {
-    properties.load(project.rootProject.file('upload.properties').newDataInputStream())
-    uploadToMaven = properties.getProperty('upload2Maven')
-    uploadToJCenter = properties.getProperty('upload2JCenter')
-    useSnapshotMaven = properties.getProperty('useSnapshotMaven')
-} catch (e) {
+    def projectUploadPropFile = project.rootProject.file('upload.properties')
+    projectUploadPropFile.withDataInputStream {
+        properties.load(it)
+    }
+} catch (ignored) {
 }
+
+def uploadToMaven = "true" == properties.getProperty('upload2Maven')
+def uploadToJCenter = "true" == properties.getProperty('upload2JCenter')
+def useSnapshotMaven = "true" == properties.getProperty('useSnapshotMaven')
 
 ext {
     upload2Maven = uploadToMaven
@@ -41,6 +42,10 @@ ext {
     guava_version = '23.0'
     ByteX_Version = upload_version
     gradle_compat_version = "1.1.0.2"
+
+    ext["signing.keyId"] = properties.getProperty("signing.keyId")
+    ext["signing.password"] = properties.getProperty("signing.password")
+    ext["signing.secretKeyRingFile"] = properties.getProperty("signing.secretKeyRingFile")
 }
 println("upload2Maven:$upload2Maven")
 println("useSnapshot:$useSnapshot")

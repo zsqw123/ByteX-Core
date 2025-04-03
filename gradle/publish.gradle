@@ -1,5 +1,105 @@
-apply from: "$rootDir/gradle/publish-maven.gradle"
-if (upload2JCenter) {
-    println("upload2JCenter=true")
-    apply from: "$rootDir/gradle/publish-bintray.gradle"
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group "$upload_group"
+version "$upload_version"
+
+def propertiesFile = project.file("gradle.properties")
+if (!propertiesFile.exists()) {
+    propertiesFile.parentFile.mkdirs()
+    propertiesFile.createNewFile()
+    propertiesFile.append("ARTIFACT_GROUP=$upload_group\n")
+    propertiesFile.append("ARTIFACT_NAME=$project.name\n")
+}
+
+def loadProperties(Properties properties) {
+    def is = new FileInputStream(project.file("gradle.properties"))
+    try {
+        properties.load(is)
+    } finally {
+        is.close()
+    }
+}
+
+def properties = new Properties()
+loadProperties(properties)
+if (properties.getProperty("ARTIFACT_NAME") == null) {
+    propertiesFile.append("ARTIFACT_NAME=$project.name\n")
+    loadProperties(properties)
+}
+if (properties.getProperty("ARTIFACT_GROUP") == null) {
+    propertiesFile.append("ARTIFACT_GROUP=$upload_group\n")
+    loadProperties(properties)
+}
+
+def pomGroupId = properties.getProperty("ARTIFACT_GROUP") == null ? "$upload_group" : properties.getProperty("ARTIFACT_GROUP")
+def pomArtifactId = properties.getProperty("ARTIFACT_NAME") == null ? "$project.name" : properties.getProperty("ARTIFACT_NAME")
+//此处特别写成upload_version，因为ARTIFACT_NAME是个ByteBus用的，ARTIFACT_GROUP和ARTIFACT_NAME共用
+def pomVersion = properties.getProperty("upload_version") == null ? "$upload_version" : properties.getProperty("upload_version")
+def mavenUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+
+def uploadDir = properties.getProperty("UPLOADDIR") == null ? "$upload_dir" : properties.getProperty("UPLOADDIR")
+
+apply plugin: 'org.jetbrains.dokka'
+dokka {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+compileJava { options.encoding = "UTF-8" }
+javadoc {
+    options {
+        addStringOption('Xdoclint:none', '-quiet')
+        encoding("UTF-8")
+    }
+}
+
+publishing {
+    publications {
+        register("mavenJava", MavenPublication.class) {
+            from components.java
+            pom {
+                groupId = pomGroupId
+                artifactId = pomArtifactId
+                version = pomVersion
+                name = pomArtifactId
+                description = "ByteX Core APIs"
+                url = projectGitUrl
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("zsqw123")
+                        name = "zsub"
+                        email.set(githubEmail)
+                    }
+                }
+                scm {
+                    url = projectGitUrl
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = mavenUrl
+            credentials {
+                username = upload_user_name
+                password = upload_password
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }

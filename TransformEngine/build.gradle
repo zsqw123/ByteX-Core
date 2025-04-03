@@ -20,6 +20,7 @@ dependencies {
     compile "com.google.code.gson:gson:2.8.2"
     compile 'dom4j:dom4j:1.6.1'
     kapt 'com.google.auto.service:auto-service:1.0-rc4'
+    compile 'com.google.auto.service:auto-service:1.0-rc4'
     compile("com.bytedance.android.build:gradle-compat-api:$gradle_compat_version")
     runtime("com.bytedance.android.build:gradle-compat-impl:$gradle_compat_version")
 }
