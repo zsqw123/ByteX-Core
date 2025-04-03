@@ -1,6 +1,7 @@
 # ByteX-Core
 
-Remove all not-Core APIs in [ByteX](https://github.com/bytedance/ByteX)
+Remove all not-Core APIs in [ByteX](https://github.com/bytedance/ByteX) and publish to Maven Central instead of
+ByteDance private repo.
 
 [Maven Central: ByteX-Core](https://central.sonatype.com/artifact/host.bytedance.byteX/TransformEngine)
 
