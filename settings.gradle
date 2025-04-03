@@ -1,8 +1,6 @@
 //common
-include ':base-plugin'
 include ':common'
 include ':TransformEngine'
-include ':HookProguard'
 include ':ProguardConfigurationResolver'
 include ':ProguardConfigurationResolver-task'
 include ':ProguardConfigurationResolver-transform'

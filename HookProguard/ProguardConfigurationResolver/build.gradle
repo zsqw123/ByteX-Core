@@ -1,7 +1,0 @@
-apply plugin: 'java'
-group "$upload_group"
-version "$upload_version"
-apply from: rootProject.file('gradle/publish.gradle')
-dependencies {
-    compileOnly gradleApi()
-}
