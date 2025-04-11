@@ -61,7 +61,9 @@ javadoc {
 
 publishing {
     publications {
-        register("mavenJava", MavenPublication.class) {
+        register("tmpPublish", MavenPublication.class)
+        register("mavenJava", MavenPublication.class)
+        withType(MavenPublication.class) {
             from components.java
             pom {
                 groupId = pomGroupId
@@ -90,7 +92,14 @@ publishing {
         }
     }
     repositories {
-        maven {
+        def tmpPublish = false
+        for (String taskName in gradle.startParameter.taskNames) {
+            if (taskName.contains('TmpPublish')) tmpPublish = true
+        }
+        if (tmpPublish) maven {
+            def tmpPublishPath = new File(rootProject.buildDir, "artifactTmpPublish")
+            url = "file://${tmpPublishPath.absolutePath}/"
+        } else maven {
             url = mavenUrl
             credentials {
                 username = upload_user_name
