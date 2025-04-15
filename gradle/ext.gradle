@@ -34,7 +34,7 @@ ext {
     githubEmail = properties.getProperty("githubEmail", "")
 
     upload_group = 'host.bytedance.byteX'
-    upload_version = "0.3.1"
+    upload_version = "0.3.2"
     upload_dir = project.rootProject.file('gradle_plugins').path
     gradle_version = '3.5.3'
     gson_version = '2.8.2'
